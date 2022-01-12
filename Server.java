@@ -36,7 +36,6 @@ public class Server
 				}
 			client.close();
 
-
 			}
 		}
 		catch(Exception e) {System.out.println(e);}

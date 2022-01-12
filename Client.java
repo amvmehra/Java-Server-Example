@@ -12,7 +12,7 @@ public class Client
 			System.out.println("Connecting to Server...");
 			conn = new Socket("localhost", 8090);
 			System.out.println("Connected to Server...");
-			String msg = "test";
+			String msg = null;
 			Scanner in = new Scanner(System.in);
 			DataOutputStream out = new DataOutputStream(conn.getOutputStream());
 			DataInputStream sin = new DataInputStream(conn.getInputStream());
