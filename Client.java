@@ -20,9 +20,9 @@ public class Client
 			{
 				System.out.print("Type a message for the server : ");
 				msg  = in.nextLine();
-				if(msg.isEmpty()) break;
 				System.out.println("Sending Message to Server...");
-				out.writeUTF(msg);	
+				out.writeUTF(msg);
+				if(msg.isEmpty()) break;
 				System.out.println("Sent");
 				String incoming = sin.readUTF();
 				System.out.println("Server Replied with: " + incoming);
