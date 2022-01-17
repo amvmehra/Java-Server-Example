@@ -10,7 +10,8 @@ public class Client
 		try
 		{
 			System.out.println("Connecting to Server...");
-			conn = new Socket("localhost", 8090);
+			InetAddress ip = InetAddress.getByName("localhost");
+			conn = new Socket(ip, 8090);
 			System.out.println("Connected to Server...");
 			String msg = null;
 			Scanner in = new Scanner(System.in);

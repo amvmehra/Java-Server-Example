@@ -1,56 +1,98 @@
 import java.net.*;
 import java.io.*;
-public class Server
+class Communicate extends Thread
 {
-	public static void main(String[] args)
+	private Socket client;
+	private int id;
+	Communicate(Socket client, int id)
 	{
-		Socket client = null;
-		ServerSocket ss = null;
-		String msg = "";
+		this.client = client;
+		this.id = id;
+	}
+	public void run()
+	{
+		int count = 0;
+		byte[] inputdata = new byte[1024];
+		DataInputStream in = null;
+		DataOutputStream out = null;
+
 		try
 		{
-			ss = new ServerSocket(8090);
-			while(true)
+			in = new DataInputStream(client.getInputStream());
+			out = new DataOutputStream(client.getOutputStream());
+			count = in.read(inputdata);
+
+			while(count > 1)
 			{
-				System.out.println("Listening for new Client...");
-				client = ss.accept();
-				System.out.println("Client Connected: " + client);
-				DataInputStream in = new DataInputStream(client.getInputStream());
-			try
-			{
-				msg = in.readUTF();
-			}
-			catch(Exception e) {}
-				while(msg.length() > 0)
-				{
-				System.out.println("Client Send : " + msg );
-				System.out.println("Echoing...");
-				DataOutputStream out = new DataOutputStream(client.getOutputStream());
-			out.writeUTF(msg);	
-			System.out.println("Done");
-			try
-			{
-				msg = in.readUTF();
-			}
-			catch(Exception e) {}
-				}
-			client.close();
+				out.write(inputdata, 0, count);
+
+				count = in.read(inputdata);
 
 			}
+
 		}
-		catch(Exception e) {System.out.println(e);}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
 		finally
 		{
-			try 
-			{
-				ss.close();
-			}
-			catch(Exception e){}
-			try 
-			{
+			try {
 				client.close();
 			}
-			catch(Exception e){}
+			catch(Exception e)
+			{
+				e.printStackTrace();
+			}
 		}
 	}
 }
+public class Server {
+	public static void main(String[] args)
+	{
+		ServerSocket server = null;
+		Socket client = null;
+		int id = 0;
+		try
+		{
+			server = new ServerSocket(8090, 10);
+			while(true)
+			{
+				try
+				{
+					System.out.println("Listening for Clients");
+					client = server.accept();
+					System.out.println("Connection Establised :" + client);
+					Thread cm = new Communicate(client, id);
+					cm.start();
+					id++;
+				}
+				catch(Exception e)
+				{
+					continue;
+				}
+			}
+
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		finally
+		{
+			try
+			{
+				server.close();
+			}
+			catch(Exception e) { e.printStackTrace(); }
+			try
+			{
+				client.close();
+			}
+			catch(Exception e) { e.printStackTrace(); }
+
+		}
+	}
+}
+
+
